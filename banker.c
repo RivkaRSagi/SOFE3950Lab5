@@ -88,9 +88,5 @@ int main(){
         printf("%d ", available[i]);
     }
 
-
-
-
-
     return 0;
 }
