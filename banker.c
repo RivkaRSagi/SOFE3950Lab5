@@ -1,3 +1,10 @@
+/*
+Iqra Zahid - 100824901
+Rhea Mathias - 100825543
+Rivka Sagi - 100780926 
+Julian Olano Medina - 100855732 
+*/
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
