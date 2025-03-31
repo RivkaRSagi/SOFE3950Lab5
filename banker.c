@@ -29,6 +29,7 @@ void printProcess(process p){
     p.need[0], p.need[1], p.need[2]);
 }
 
+
 void transferArray(int source[3], int (*dest)[3]){
     for(int i=0; i<3; i++){
         (*dest)[i] = source[i];
@@ -69,16 +70,63 @@ int main(){
 
     //Calculate available: total - allocated 
     int tempSum[3] = {0, 0, 0};
-    for(int i=0; i<5; i++){
-        tempSum[0] += P[i].alloc[0];
-        tempSum[1] += P[i].alloc[1];
-        tempSum[2] += P[i].alloc[2];
+    for(int i=0; i<5; i++){//for every process
+        for(int j=0; j<3; j++){//for every resource
+            tempSum[j] += P[i].alloc[j];
+        }
     }
 
     printf("\ncurrently available in system:\n");
     for(int i=0; i<3; i++){
         available[i] -= tempSum[i];
         printf("%d ", available[i]);
+    }
+    printf("\n");
+
+    //Bankers algorithm: check need array for a process with resource 
+    //  needs that can be fully allocated
+    int safeSequence[5];
+    int safeIndex = 0;
+    int loops = 0;
+    bool finish[5] = {false, false, false, false, false};
+    bool safeProcess = false;
+    bool safe = finish[0] + finish[1] + finish[2] + finish[3] + finish[4];
+
+    do{ 
+        //printf("loop #%d\n", loops);
+        for(int i=0; i<5; i++){//for each process
+            //printf("checking process P%d whos finish status is %d\n", i, finish[i]);
+            if(finish[i] == true){continue;};
+            for(int j=0;j<3;j++){//for each resource
+                if((available[j]-P[i].need[j]) >= 0){//if (available - needed) is positive
+                    //printf("available[%d]-process[%d].need[%d] = %d\n", j, i, j, available[j]-P[i].need[j]);
+                    safeProcess = true;//assume process is safe
+                }else{safeProcess = false; break;}
+            }
+            if(safeProcess){//if a safe process is found
+                //printf("process %d is safe, adding to sequence at %d\n", i, safeIndex);
+                safeSequence[safeIndex] = i;
+                safeIndex++;
+                finish[i] = true;
+                for(int j=0; j<3; j++){//assume process is completed and all resources returned
+                    available[j] += P[i].alloc[j];
+                }
+            }else{safeProcess = false;}
+        }
+        loops++;
+        safe = finish[0] && finish[1] && finish[2] && finish[3] && finish[4];
+        //printf("safe status: %d, loops: %d\n", safe, loops);
+    }while((!safe) && (loops<5));
+
+    if(safe){
+        printf("safe sequence: ");
+        for(int i=0; i<5; i++){
+            printf("%d ", safeSequence[i]);
+        }
+        printf("\n");
+    }
+    else{
+        printf("no safe sequence was found for these processes\n");
     }
 
 
