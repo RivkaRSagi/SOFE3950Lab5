@@ -100,18 +100,14 @@ int main(){
     bool safe = finish[0] + finish[1] + finish[2] + finish[3] + finish[4];
 
     do{ 
-        //printf("loop #%d\n", loops);
         for(int i=0; i<5; i++){//for each process
-            //printf("checking process P%d whos finish status is %d\n", i, finish[i]);
             if(finish[i] == true){continue;};
             for(int j=0;j<3;j++){//for each resource
                 if((available[j]-P[i].need[j]) >= 0){//if (available - needed) is positive
-                    //printf("available[%d]-process[%d].need[%d] = %d\n", j, i, j, available[j]-P[i].need[j]);
                     safeProcess = true;//assume process is safe
                 }else{safeProcess = false; break;}
             }
             if(safeProcess){//if a safe process is found
-                //printf("process %d is safe, adding to sequence at %d\n", i, safeIndex);
                 safeSequence[safeIndex] = i;
                 safeIndex++;
                 finish[i] = true;
@@ -122,7 +118,6 @@ int main(){
         }
         loops++;
         safe = finish[0] && finish[1] && finish[2] && finish[3] && finish[4];
-        //printf("safe status: %d, loops: %d\n", safe, loops);
     }while((!safe) && (loops<5));
 
     if(safe){
