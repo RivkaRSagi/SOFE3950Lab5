@@ -98,69 +98,32 @@ int requestResources(){
 
 //releaseResources() allocates requested resource to customer, waits until customer finishes,
 //  then releases the resources back to the system
-int releaseResources(int custNum, int release[NUMBER_OF_RESOURCES]){
-    if(0){//succussful (request is granted)
-        return 0;
+int releaseResources(int custNum){
+    //return allocated resources to available
+    for(int i=0; i<NUMBER_OF_RESOURCES; i++){
+        available[i] += allocation[custNum][i];
     }
-    else{//unsuccessful (request is not granted)
-        return -1;
-    }    
+    //free the space that the customer request was using
+    int zero[3] = {0,0,0};
+    transferArray(zero, maximum[custNum]);
+    transferArray(zero, allocation[custNum]);
+    transferArray(zero, need[custNum]);
+
+    return 0;
 
 }
 
-// //define process struct
-// typedef struct process{
-//     int max[3];
-//     int alloc[3];
-//     int need[3];
-// }process;
-
-// void printProcess(process p){
-//     printf("max %d %d %d\nallocated %d %d %d\nneeded %d %d %d\n", 
-//         p.max[0], p.max[1], p.max[2], p.alloc[0], p.alloc[1], p.alloc[2],
-//     p.need[0], p.need[1], p.need[2]);
-// }
-
-
-
-
-// void transfer2Arrays(int source[3], int (*dest)[3], int source2[3], int (*dest2)[3]){
-//     for(int i=0; i<3; i++){
-//         (*dest)[i] = source[i];
-//         (*dest2)[i] = source2[i];
-//     }
-// }
-
 int main(){
+    //initialize global processes
 
-    //create initial processes
-    // process P[5];
-    // int max[5][3] = {{7, 5, 3}, {3,2,2}, {9,0,2}, {2,2,2}, {4,3,3}};
-    // int alloc[5][3] = {{0,1,0}, {2,0,0}, {3,0,2}, {2,1,1}, {0,0,2}};
-
-    // transfer2Arrays(max[0], &P[0].max, alloc[0], &P[0].alloc);
-    // transfer2Arrays(max[1], &P[1].max, alloc[1], &P[1].alloc);
-    // transfer2Arrays(max[2], &P[2].max, alloc[2], &P[2].alloc);
-    // transfer2Arrays(max[3], &P[3].max, alloc[3], &P[3].alloc);
-    // transfer2Arrays(max[4], &P[4].max, alloc[4], &P[4].alloc);
-
-    //calculate need for each process
+    //calculate initial need for each process
     for(int i=0; i<NUMBER_OF_CUSTOMERS; i++){
         for(int j=0; j<NUMBER_OF_RESOURCES; j++){
             need[i][j] = maximum[i][j]-allocation[i][j];
         }
     }
 
-    for(int i=0; i<5; i++){
-        printf("process %d need\n", i);
-        for(int j=0; j<NUMBER_OF_RESOURCES; j++){
-            printf("%d ", need[i][j]);
-        }
-        printf("\n");
-    }
-
-
-    //Calculate available: total - allocated 
+    //Calculate initial available: total - allocated 
     int tempSum[3] = {0, 0, 0};
     for(int i=0; i<5; i++){//for every process
         for(int j=0; j<3; j++){//for every resource
@@ -176,7 +139,26 @@ int main(){
     printf("\n");
 
     
-    //while loop to ask for customer processes
+    //run bankers algorithm on initial global variables
+    if(requestResources() == 0){//if initial bankers algorithm works
+        //(create a thread?) and run the first in the sequence
+    }else{//if bankers algorithm fails on initial set up
+        //empty global array and wait for requests
+    }
+
+    bool keepLooping = true;
+    while(keepLooping){
+        //create thread
+        //ask customer for input
+
+        //ask for input
+        //
+
+
+        //ask for customer input
+
+
+    }
         //ask for customer input
         //replace process global variables
         //run bankers algorithm
@@ -184,46 +166,7 @@ int main(){
             //if unsafe, reset process global variable to 0
 
 
-    //Bankers algorithm: check need array for a process with resource 
-    //  needs that can be fully allocated
-    int safeSequence[5];
-    int safeIndex = 0;
-    int loops = 0;
-    bool finish[5] = {false, false, false, false, false};
-    bool safeProcess = false;
-    bool safe = finish[0] + finish[1] + finish[2] + finish[3] + finish[4];
 
-    do{ 
-        for(int i=0; i<5; i++){//for each process
-            if(finish[i] == true){continue;};
-            for(int j=0;j<3;j++){//for each resource
-                if((available[j]-P[i].need[j]) >= 0){//if (available - needed) is positive
-                    safeProcess = true;//assume process is safe
-                }else{safeProcess = false; break;}
-            }
-            if(safeProcess){//if a safe process is found
-                safeSequence[safeIndex] = i;
-                safeIndex++;
-                finish[i] = true;
-                for(int j=0; j<3; j++){//assume process is completed and all resources returned
-                    available[j] += P[i].alloc[j];
-                }
-            }else{safeProcess = false;}
-        }
-        loops++;
-        safe = finish[0] && finish[1] && finish[2] && finish[3] && finish[4];
-    }while((!safe) && (loops<5));
-
-    if(safe){
-        printf("safe sequence: ");
-        for(int i=0; i<5; i++){
-            printf("%d ", safeSequence[i]);
-        }
-        printf("\n");
-    }
-    else{
-        printf("no safe sequence was found for these processes\n");
-    }
 
     return 0;
 }
