@@ -15,13 +15,37 @@ Julian Olano Medina - 100855732
 #include <sys/wait.h>
 #include <string.h>
 
+#define NUMBER_OF_CUSTOMERS 5
+#define NUMBER_OF_RESOURCES 3
+
 //define system resources
 #define RESOURCE_A 10
 #define RESOURCE_B 5
 #define RESOURCE_C 7
 
 //define available system resources (initially)
-int available[] = {RESOURCE_A, RESOURCE_B, RESOURCE_C};
+int available[NUMBER_OF_RESOURCES] = {RESOURCE_A, RESOURCE_B, RESOURCE_C};
+
+//max demand of each customer
+int maximum[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
+
+//amount currently allocated to each customer
+int allocation[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
+
+//the remaining need of each customer
+int need[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
+
+//requestResources() uses the bankers algorithm to check if the request for resources is safe
+//  returns 0 if successful and -1 if not
+int requestResources(int custNum, int request[NUMBER_OF_RESOURCES]){
+
+}
+
+//releaseResources() allocates requested resource to customer, waits until customer finishes,
+//  then releases the resources back to the system
+int releaseResources(int custNum, int release[NUMBER_OF_RESOURCES]){
+
+}
 
 //define process struct
 typedef struct process{
