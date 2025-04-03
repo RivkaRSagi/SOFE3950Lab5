@@ -28,16 +28,16 @@ pthread_mutex_t mutex;       // For Request and Release Methods
 pthread_mutex_t print_mutex; // New mutex for print protection
 
 // Function prototypes
-void parse_available_resources_from_arguments(int argc, char *argv[]);
+void parse_available_resources_from_arguments(int argc, const char *argv[]);
 void initialize_banker_matrices(void);
 int main(int argc, char *argv[]); // Creates Customer Threads
 void *customer_thread(void *arg);
-int release_resources(int custNum, int release[]);
+int release_resources(int custNum, const int release[]);
 int request_resources(int custNum, int request[]);// Must Ensure Safe State
 bool is_safe_state(void); // (Banker's Algorithm)
 
 // Parse command-line arguments to initialize available resources
-void parse_available_resources_from_arguments(int argc, char *argv[]) {
+void parse_available_resources_from_arguments(int argc, const char *argv[]) {
    if (argc != NUMBER_OF_RESOURCES + 1) {
       fprintf(stderr, "Usage: %s <res1> <res2> <res3>\n", argv[0]);
       exit(EXIT_FAILURE);
@@ -71,7 +71,7 @@ void initialize_banker_matrices(void) {
 int main(int argc, char *argv[]) {
 
    // Initialize resources
-   parse_available_resources_from_arguments(argc, argv);
+   parse_available_resources_from_arguments(argc, (const char **)argv);
    initialize_banker_matrices();
 
    // Initialize mutexes
@@ -179,7 +179,7 @@ void *customer_thread(void *arg) {
 }
 
 // Release resources (atomic)
-int release_resources(int custNum, int release[]) {
+int release_resources(int custNum, const int release[]) {
    // CRITICAL SECTION
    pthread_mutex_lock(&mutex);
    // Check Validity for all resource types
