@@ -12,6 +12,7 @@ Julian Olano Medina - 100855732
 #include <sys/types.h> // pthread_t and other types
 #include <time.h>      // For seeding rand()
 #include <unistd.h>    // For sleep
+#include <limits.h>    // For INT_MAX
 
 #define NUMBER_OF_CUSTOMERS 5 // Total number of customer threads
 #define NUMBER_OF_RESOURCES 3 // Types of resources in the system
@@ -55,7 +56,7 @@ void parse_available_resources_from_arguments(int argc, char *argv[]) {
    }
 }
 
-// Set need, maximum, and allocation tables to zero
+// Set allocation to zero, initialize need and maximum to equal values
 void initialize_banker_matrices(void) {
    srand(time(NULL)); // seed random value
    for (int i = 0; i < NUMBER_OF_CUSTOMERS; i++) {
@@ -140,7 +141,7 @@ void *customer_thread(void *arg) {
       int request[NUMBER_OF_RESOURCES];
       pthread_mutex_lock(&mutex); // Lock while generating request for safety
       for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
-         request[i] = rand() % (need[custNum][i] + 1); // Request <= need
+         request[i] = need[custNum][i]; // Request == need
       }
       pthread_mutex_unlock(&mutex); // Unlock after request generation
 
@@ -165,6 +166,7 @@ void *customer_thread(void *arg) {
 
          // Release the resources after the simulated work
          release_resources(custNum, request);
+         break;
       } else {
          // If the request is denied, print a denial message, protected by
          // the print mutex
