@@ -124,16 +124,13 @@ cleanup:
 // Customer thread function
 //
 // This function simulates the behavior of a customer in a resource allocation
-// system. It generates random resource requests, tries to acquire resources,
-// and releases them once work is simulated. It also prints the status of
-// requests and releases. The function runs in an infinite loop until the
-// program is terminated.
+// system. It tries to acquire the resources needed to finish,
+// and if it succeeded, it will simulate work and then release all resources.
+// If request failed, it will be created again after a cooldown of 1s.
+// The function runs in an infinite loop until it gains a successful request.
 void *customer_thread(void *arg) {
    int custNum = *(int *)arg;
    free(arg); // Free the dynamically allocated customer number
-
-   // Initialize a unique seed for this thread to generate random values
-   srand((unsigned int)(getpid() + custNum));
 
    while (true) {
       // Generate random resource request that doesn't exceed the customer's
